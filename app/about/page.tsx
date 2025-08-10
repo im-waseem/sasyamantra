@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Leaf, Heart, Shield, Award, Users } from 'lucide-react';
+import { Leaf, Heart, Shield, Users } from 'lucide-react';
 
 export default function About() {
   const values = [
@@ -17,11 +17,6 @@ export default function About() {
       icon: Shield,
       title: "Quality Guaranteed",
       description: "All products undergo stringent testing to guarantee safety, efficacy, and consistency."
-    },
-    {
-      icon: Award,
-      title: "Recognized Excellence",
-      description: "Award-winning herbal hair care solutions trusted by thousands worldwide."
     }
   ];
 
@@ -74,7 +69,7 @@ export default function About() {
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  Sasya Mantra emerged from a deep-rooted respect for Ayurveda and a desire to harness nature’s healing powers. Inspired by ancient Sanskrit wisdom and traditional family recipes, our founder set out to create truly effective herbal hair care.
+                  Sasya Mantra was born from a deep respect for nature and a passion for natural healing. Inspired by traditional family recipes and the wisdom of ancient plants, our founder aimed to create truly effective herbal hair care.
                 </p>
                 <p>
                   The name “Sasya” means plants and herbs, while “Mantra” signifies a sacred formula or chant — together symbolizing our commitment to delivering nature’s sacred formula for wellness.
@@ -121,7 +116,7 @@ export default function About() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {values.map((value, index) => {
               const IconComponent = value.icon;
               return (

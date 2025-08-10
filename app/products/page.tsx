@@ -71,8 +71,8 @@ export default function Products() {
                       <span className="ml-2 text-gray-600">(1,234 reviews)</span>
                     </div>
                     <div className="flex items-baseline space-x-2">
-                      <span className="text-3xl font-bold text-gray-900">₹899</span>
-                      <span className="text-xl text-gray-500 line-through">₹1,299</span>
+                      <span className="text-3xl font-bold text-gray-900">₹299</span>
+                      <span className="text-xl text-gray-500 line-through">349</span>
                       <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-100">31% OFF</Badge>
                     </div>
                   </div>
@@ -112,7 +112,7 @@ export default function Products() {
 
                   <div className="space-y-3">
                     <Button size="lg" className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-                      Add to Cart - ₹899
+                      Add to Cart - ₹299
                     </Button>
                     <Button variant="outline" size="lg" className="w-full border-green-600 text-green-600 hover:bg-green-50">
                       Buy Now

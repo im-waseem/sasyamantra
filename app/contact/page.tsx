@@ -34,17 +34,17 @@ export default function Contact() {
     {
       icon: MapPin,
       title: "Address",
-      details: "123 Herbal Lane, Green Valley, Mumbai 400001, India"
+      details: " No 15,ITC Road ,RS Palya,MS Nagar, Bengaluru - 560033"
     },
     {
       icon: Phone,
       title: "Phone",
-      details: "+91 98765 43210"
+      details: "+919742861627"
     },
     {
       icon: Mail,
       title: "Email",
-      details: "info@sasyamantra.com"
+      details: " care.sasyamantra@gmail.com"
     },
     {
       icon: Clock,

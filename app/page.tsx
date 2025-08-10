@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
-import { Leaf, Star, Users, Award } from 'lucide-react';
+import { Leaf, Star, Users } from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-gray-50 to-gray-100 py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,7 +19,7 @@ export default function Home() {
                   Growth Oil
                 </h1>
                 <p className="text-lg text-gray-600 max-w-md">
-                  Nourish your hair naturally with our premium herbal formula. Experience the power of ancient Ayurvedic wisdom for healthier, stronger hair.
+                  Nourish your hair naturally with our premium herbal formula. Experience the power of nature for healthier, stronger hair.
                 </p>
               </div>
               
@@ -40,7 +40,7 @@ export default function Home() {
               </div>
 
               {/* Features */}
-              <div className="grid grid-cols-3 gap-4 pt-8">
+              <div className="grid grid-cols-2 gap-4 pt-8">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Leaf className="w-6 h-6 text-green-600" />
@@ -52,12 +52,6 @@ export default function Home() {
                     <Star className="w-6 h-6 text-green-600" />
                   </div>
                   <p className="text-sm font-medium text-gray-900">Clinically Tested</p>
-                </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <Award className="w-6 h-6 text-green-600" />
-                  </div>
-                  <p className="text-sm font-medium text-gray-900">Award Winning</p>
                 </div>
               </div>
             </div>
@@ -100,10 +94,10 @@ export default function Home() {
             About Sasya Mantra
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
-            At Sasya Mantra, we believe in the power of nature to nurture and heal. Our herbal hair growth oil is crafted using traditional Ayurvedic recipes passed down through generations, combined with modern scientific research to deliver exceptional results for your hair care needs.
+            At Sasya Mantra, we believe in the power of nature to nurture and heal. Our herbal hair growth oil is crafted using traditional recipes passed down through generations, combined with modern scientific research to deliver exceptional results for your hair care needs.
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16 max-w-2xl mx-auto">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="w-8 h-8 text-green-600" />
@@ -117,13 +111,6 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">15+</h3>
               <p className="text-gray-600">Natural Ingredients</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">5+</h3>
-              <p className="text-gray-600">Years of Excellence</p>
             </div>
           </div>
         </div>
@@ -151,6 +138,35 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* WhatsApp Chat Support Button */}
+      <a
+        href="https://wa.me/9742861627"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg transition-colors duration-200"
+        aria-label="Chat with us on WhatsApp"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-8 h-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 10a9 9 0 1116.233 6.156L21 21l-4.844-1.764A9 9 0 013 10z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M16 11a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+      </a>
     </div>
   );
-}
+}             
