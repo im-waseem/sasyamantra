@@ -1,17 +1,5 @@
-<<<<<<< HEAD
-export default function Home() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-3xl font-bold text-green-700">
-        Welcome to Sasya Mantra
-      </h1>
-    </div>
-  );
-}
-=======
 import { Button } from '@/components/ui/button';
 import { Leaf, Star, Users, Award } from 'lucide-react';
-import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -75,33 +63,31 @@ export default function Home() {
             </div>
 
             {/* Right Content - Product Image */}
-            <div className="flex justify-center">
-              <div className="relative">
-                <div className="w-80 h-96 bg-gradient-to-b from-amber-100 to-amber-50 rounded-3xl shadow-2xl flex items-center justify-center">
-                  <div className="w-48 h-72 bg-amber-800 rounded-2xl relative overflow-hidden">
-                    <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-black rounded-full"></div>
-                    <div className="absolute top-16 left-4 right-4 bg-amber-100 rounded-lg p-4">
-                      <div className="flex items-center justify-center mb-2">
-                        <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                          <Leaf className="w-5 h-5 text-white" />
-                        </div>
+            <div className="flex justify-center relative">
+              <div className="w-80 h-96 bg-gradient-to-b from-amber-100 to-amber-50 rounded-3xl shadow-2xl flex items-center justify-center">
+                <div className="w-48 h-72 bg-amber-800 rounded-2xl relative overflow-hidden">
+                  <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-black rounded-full"></div>
+                  <div className="absolute top-16 left-4 right-4 bg-amber-100 rounded-lg p-4">
+                    <div className="flex items-center justify-center mb-2">
+                      <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                        <Leaf className="w-5 h-5 text-white" />
                       </div>
-                      <div className="text-center">
-                        <h3 className="font-bold text-gray-900 text-sm">Sasya Mantra</h3>
-                        <p className="text-xs text-gray-700 mt-1">Herbal Hair</p>
-                        <p className="text-xs text-gray-700">Growth Oil</p>
-                        <div className="mt-3 flex items-center justify-center">
-                          <Leaf className="w-6 h-6 text-green-600" />
-                        </div>
-                        <p className="text-xs text-gray-600 mt-2">100 ml</p>
+                    </div>
+                    <div className="text-center">
+                      <h3 className="font-bold text-gray-900 text-sm">Sasya Mantra</h3>
+                      <p className="text-xs text-gray-700 mt-1">Herbal Hair</p>
+                      <p className="text-xs text-gray-700">Growth Oil</p>
+                      <div className="mt-3 flex items-center justify-center">
+                        <Leaf className="w-6 h-6 text-green-600" />
                       </div>
+                      <p className="text-xs text-gray-600 mt-2">100 ml</p>
                     </div>
                   </div>
                 </div>
-                {/* Decorative elements */}
-                <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-200 rounded-full opacity-60"></div>
-                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-orange-200 rounded-full opacity-60"></div>
               </div>
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-200 rounded-full opacity-60"></div>
+              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-orange-200 rounded-full opacity-60"></div>
             </div>
           </div>
         </div>
@@ -168,4 +154,3 @@ export default function Home() {
     </div>
   );
 }
->>>>>>> 02b1f55 (Initial commit)
