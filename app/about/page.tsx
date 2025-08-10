@@ -1,58 +1,67 @@
 import { Button } from '@/components/ui/button';
-import { Leaf, Heart, Shield, Award, Users, Star } from 'lucide-react';
+import { Leaf, Heart, Shield, Award, Users } from 'lucide-react';
 
 export default function About() {
   const values = [
     {
       icon: Leaf,
       title: "Natural & Pure",
-      description: "We use only the finest natural ingredients sourced directly from trusted farms."
+      description: "Only the finest natural ingredients, carefully sourced from trusted farms to ensure purity."
     },
     {
       icon: Heart,
-      title: "Made with Care",
-      description: "Every bottle is crafted with love and attention to detail for the best results."
+      title: "Crafted with Care",
+      description: "Each product is lovingly formulated with meticulous attention to detail for optimal results."
     },
     {
       icon: Shield,
-      title: "Quality Assured",
-      description: "Our products undergo rigorous testing to ensure safety and effectiveness."
+      title: "Quality Guaranteed",
+      description: "All products undergo stringent testing to guarantee safety, efficacy, and consistency."
     },
     {
       icon: Award,
-      title: "Award Winning",
-      description: "Recognized for excellence in natural hair care solutions."
+      title: "Recognized Excellence",
+      description: "Award-winning herbal hair care solutions trusted by thousands worldwide."
     }
   ];
 
   const team = [
     {
-      name: "Dr. Priya Sharma",
-      role: "Chief Formulator",
-      description: "20+ years in Ayurvedic medicine"
-    },
-    {
-      name: "Rajesh Kumar",
-      role: "Quality Control Head",
-      description: "Expert in herbal product testing"
-    },
-    {
-      name: "Meera Patel",
-      role: "Research Director",
-      description: "PhD in Natural Product Chemistry"
+      name: "Sulaiman",
+      role: "Head Herbalist",
+      description: "Dedicated expert in herbal formulations and natural healing."
     }
   ];
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* About Us Section */}
       <section className="bg-gradient-to-br from-green-50 to-green-100 py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-            About <span className="text-green-600">Sasya Mantra</span>
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-8">
+            About <span className="text-green-600">Sasya Mantra</span> 🌿
           </h1>
-          <p className="text-xl text-gray-600 leading-relaxed">
-            Committed to bringing you the finest natural hair care solutions through the wisdom of Ayurveda and modern science.
+          <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+            Sasya Mantra is more than a brand — it’s a story of heritage, care, and the timeless power of nature.
+          </p>
+          <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+            The name comes from two Sanskrit words:
+          </p>
+          <p className="text-lg text-gray-700 mb-4 leading-relaxed">
+            <strong className="text-green-600">Sasya</strong> – meaning plants, herbs, and natural growth
+          </p>
+          <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+            <strong className="text-green-600">Mantra</strong> – meaning a sacred chant, formula, or powerful message
+          </p>
+          <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+            Together, Sasya Mantra means “the sacred formula of nature”, representing our mission to bring authentic herbal purity into modern life.
+          </p>
+          <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+            While we began with herbal hair care, our vision reaches further — to offer a complete range of herbal and wellness products that help you live a healthier, more natural life.
+          </p>
+          <h2 className="text-2xl font-semibold text-green-600 mb-4">Our Promise</h2>
+          <p className="text-lg text-gray-700 max-w-xl mx-auto leading-relaxed">
+            We are committed to creating pure, safe, and effective herbal products that respect nature and care for you. Every product is made with honesty, authentic ingredients, and a vision for a healthier tomorrow — without compromise.
           </p>
         </div>
       </section>
@@ -65,13 +74,13 @@ export default function About() {
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  Sasya Mantra was born from a deep respect for traditional Ayurvedic wisdom and a passion for natural healing. Our founder, inspired by ancient Sanskrit texts and family recipes, embarked on a journey to create hair care solutions that truly work.
+                  Sasya Mantra emerged from a deep-rooted respect for Ayurveda and a desire to harness nature’s healing powers. Inspired by ancient Sanskrit wisdom and traditional family recipes, our founder set out to create truly effective herbal hair care.
                 </p>
                 <p>
-                  "Sasya" means herbs in Sanskrit, and "Mantra" represents the sacred knowledge passed down through generations. Together, they embody our mission to harness the power of natural herbs through time-tested formulations.
+                  The name “Sasya” means plants and herbs, while “Mantra” signifies a sacred formula or chant — together symbolizing our commitment to delivering nature’s sacred formula for wellness.
                 </p>
                 <p>
-                  Today, we continue to honor this legacy by combining traditional wisdom with modern research, ensuring that every product meets the highest standards of quality and effectiveness.
+                  Today, we continue this legacy by blending time-tested traditions with modern research, ensuring every product is safe, pure, and effective.
                 </p>
               </div>
             </div>
@@ -92,7 +101,7 @@ export default function About() {
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-gray-900">15+</p>
-                      <p className="text-sm text-gray-600">Natural Herbs</p>
+                      <p className="text-sm text-gray-600">Herbal Ingredients</p>
                     </div>
                   </div>
                 </div>
@@ -108,7 +117,7 @@ export default function About() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Values</h2>
             <p className="text-lg text-gray-600">
-              The principles that guide everything we do
+              These core principles guide everything we do at Sasya Mantra
             </p>
           </div>
           
@@ -133,13 +142,13 @@ export default function About() {
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Expert Team</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Meet Our Expert Team</h2>
             <p className="text-lg text-gray-600">
-              Meet the passionate professionals behind Sasya Mantra
+              Passionate professionals dedicated to crafting the best herbal products
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-8 max-w-md mx-auto">
             {team.map((member, index) => (
               <div key={index} className="text-center p-6 bg-gray-50 rounded-lg">
                 <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -154,14 +163,14 @@ export default function About() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Call to Action */}
       <section className="py-20 bg-green-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
             Ready to Transform Your Hair?
           </h2>
           <p className="text-xl text-green-100 mb-8">
-            Join thousands of satisfied customers who trust Sasya Mantra for their hair care needs.
+            Join thousands of happy customers who trust Sasya Mantra for natural, effective hair care.
           </p>
           <Button size="lg" className="bg-white text-green-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold">
             Order Now
