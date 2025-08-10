@@ -1,27 +1,25 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Navbar from '@/components/Navbar';
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Sasya Mantra',
-  description: 'Pure Herbal Care, Powered by Nature',
+  title: 'Sasya Mantra - Natural Herbal Hair Growth Oil',
+  description: 'Discover the power of natural herbs with Sasya Mantra Herbal Hair Growth Oil. Nourish your hair naturally and promote healthy growth.',
 };
 
-export default function Layout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
-        {children}
+      <body className={inter.className}>
+        <Navbar />
+        <main>{children}</main>
       </body>
     </html>
   );
