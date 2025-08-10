@@ -4,11 +4,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: { 
-    unoptimized: true 
+  images: {
+    unoptimized: true,
   },
   webpack: (config) => {
-    // Suppress @supabase/realtime-js critical dependency warnings
     config.ignoreWarnings = [
       { module: /@supabase\/realtime-js/ },
     ];
