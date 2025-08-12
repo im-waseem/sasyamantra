@@ -1,248 +1,119 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Leaf, Star, Shield, Award, Heart } from 'lucide-react';
+"use client";
 
-export default function Products() {
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Leaf, Star } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient"; // ✅ Using your custom Supabase client
+
+export default function ProductPage() {
+  const router = useRouter();
+  const [cart, setCart] = useState<{ name: string; qty: number }[]>([]);
+
+  // ✅ Check authentication and navigate
+  const handleOrderNow = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      router.push("/login"); // redirect to login if not authenticated
+    } else {
+      router.push("/checkout"); // go to checkout if authenticated
+    }
+  };
+
+  // ✅ Add to cart (multiple quantities allowed)
+  const handleAddToCart = () => {
+    const productName = "Sasya Mantra Herbal Hair Growth Oil";
+
+    setCart((prev) => {
+      const existing = prev.find((item) => item.name === productName);
+      if (existing) {
+        return prev.map((item) =>
+          item.name === productName
+            ? { ...item, qty: item.qty + 1 }
+            : item
+        );
+      }
+      return [...prev, { name: productName, qty: 1 }];
+    });
+
+    alert("Product added to cart!");
+  };
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-green-50 to-green-100 py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-            Our <span className="text-green-600">Products</span>
-          </h1>
-          <p className="text-xl text-gray-600 leading-relaxed">
-            Discover our range of premium natural hair care products, crafted with love and ancient wisdom.
-          </p>
-        </div>
-      </section>
-
-      {/* Featured Product */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <Badge className="mb-4 bg-green-100 text-green-800 hover:bg-green-100">
-              Featured Product
-            </Badge>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Herbal Hair Growth Oil</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Our flagship product combines 15+ carefully selected herbs in a potent formula designed to nourish your scalp and promote healthy hair growth.
-            </p>
-          </div>
-          
-          <Card className="shadow-xl max-w-4xl mx-auto">
-            <CardContent className="p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                {/* Product Image */}
-                <div className="flex justify-center">
-                  <div className="w-80 h-96 bg-gradient-to-b from-amber-100 to-amber-50 rounded-3xl shadow-2xl flex items-center justify-center">
-                    <div className="w-48 h-72 bg-amber-800 rounded-2xl relative overflow-hidden">
-                      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-black rounded-full"></div>
-                      <div className="absolute top-16 left-4 right-4 bg-amber-100 rounded-lg p-4">
-                        <div className="flex items-center justify-center mb-2">
-                          <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                            <Leaf className="w-5 h-5 text-white" />
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <h3 className="font-bold text-gray-900 text-sm">Sasya Mantra</h3>
-                          <p className="text-xs text-gray-700 mt-1">Herbal Hair</p>
-                          <p className="text-xs text-gray-700">Growth Oil</p>
-                          <div className="mt-3 flex items-center justify-center">
-                            <Leaf className="w-6 h-6 text-green-600" />
-                          </div>
-                          <p className="text-xs text-gray-600 mt-2">100 ml</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Product Details */}
-                <div className="space-y-6">
-                  <div>
-                    <div className="flex items-center mb-2">
-                      <div className="flex text-yellow-400">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-5 h-5 fill-current" />
-                        ))}
-                      </div>
-                      <span className="ml-2 text-gray-600">(1,234 reviews)</span>
-                    </div>
-                    <div className="flex items-baseline space-x-2">
-                      <span className="text-3xl font-bold text-gray-900">₹299</span>
-                      <span className="text-xl text-gray-500 line-through">349</span>
-                      <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-100">31% OFF</Badge>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-semibold text-gray-900">Key Benefits:</h3>
-                    <ul className="space-y-2">
-                      <li className="flex items-center">
-                        <Leaf className="w-5 h-5 text-green-600 mr-3" />
-                        <span>Promotes natural hair growth</span>
-                      </li>
-                      <li className="flex items-center">
-                        <Heart className="w-5 h-5 text-green-600 mr-3" />
-                        <span>Nourishes scalp deeply</span>
-                      </li>
-                      <li className="flex items-center">
-                        <Shield className="w-5 h-5 text-green-600 mr-3" />
-                        <span>Prevents hair fall</span>
-                      </li>
-                      <li className="flex items-center">
-                        <Star className="w-5 h-5 text-green-600 mr-3" />
-                        <span>Adds natural shine and strength</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-3 bg-green-50 rounded-lg">
-                      <p className="text-2xl font-bold text-green-600">100ml</p>
-                      <p className="text-sm text-gray-600">Volume</p>
-                    </div>
-                    <div className="text-center p-3 bg-green-50 rounded-lg">
-                      <p className="text-2xl font-bold text-green-600">30</p>
-                      <p className="text-sm text-gray-600">Days Supply</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <Button size="lg" className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-                      Add to Cart - ₹299
-                    </Button>
-                    <Button variant="outline" size="lg" className="w-full border-green-600 text-green-600 hover:bg-green-50">
-                      Buy Now
-                    </Button>
-                  </div>
-                </div>
+      <section className="bg-gradient-to-br from-gray-50 to-gray-100 py-20 lg:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                  Sasya Mantra
+                  <br />
+                  <span className="text-green-600">Herbal Hair</span>
+                  <br />
+                  Growth Oil
+                </h1>
+                <p className="text-lg text-gray-600 max-w-md">
+                  Nourish your hair naturally with our premium herbal formula.
+                  Experience the power of nature for healthier, stronger hair.
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
 
-      {/* Ingredients Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Natural Ingredients</h2>
-            <p className="text-lg text-gray-600">
-              Our formula contains powerful herbs known for their hair care benefits
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { name: "Bhringraj", benefit: "Promotes hair growth", description: "Known as the 'King of Hair' in Ayurveda" },
-              { name: "Amla", benefit: "Rich in Vitamin C", description: "Strengthens hair follicles naturally" },
-              { name: "Coconut Oil", benefit: "Deep moisturization", description: "Nourishes hair from root to tip" },
-              { name: "Neem", benefit: "Anti-bacterial", description: "Keeps scalp healthy and clean" },
-              { name: "Fenugreek", benefit: "Prevents hair fall", description: "Rich in proteins and nutrients" },
-              { name: "Brahmi", benefit: "Stress relief", description: "Calms scalp and reduces hair loss" }
-            ].map((ingredient, index) => (
-              <Card key={index} className="shadow-md hover:shadow-lg transition-shadow duration-200">
-                <CardHeader>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  size="lg"
+                  className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg font-semibold rounded-md transition-colors duration-200"
+                  onClick={handleOrderNow}
+                >
+                  Order Now
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-green-600 text-green-600 hover:bg-green-50 px-8 py-3 text-lg font-semibold rounded-md transition-colors duration-200"
+                  onClick={handleAddToCart}
+                >
+                  Add to Cart
+                </Button>
+              </div>
+
+              {/* Features */}
+              <div className="grid grid-cols-2 gap-4 pt-8">
+                <div className="text-center">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Leaf className="w-6 h-6 text-green-600" />
                   </div>
-                  <CardTitle className="text-center text-lg">{ingredient.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <Badge className="mb-2 bg-green-100 text-green-800 hover:bg-green-100">
-                    {ingredient.benefit}
-                  </Badge>
-                  <p className="text-gray-600 text-sm">{ingredient.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How to Use */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How to Use</h2>
-            <p className="text-lg text-gray-600">
-              Simple steps for maximum benefits
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                step: "1",
-                title: "Apply",
-                description: "Take 3-4 drops and apply to scalp and hair roots"
-              },
-              {
-                step: "2",
-                title: "Massage",
-                description: "Gently massage for 5-10 minutes in circular motions"
-              },
-              {
-                step: "3",
-                title: "Leave",
-                description: "Leave overnight or for at least 2 hours before washing"
-              }
-            ].map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold text-white">{step.step}</span>
+                  <p className="text-sm font-medium text-gray-900">
+                    100% Natural
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
-            <p className="text-lg text-gray-600">
-              Real results from real people
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Priya K.",
-                rating: 5,
-                review: "Amazing results! My hair fall reduced significantly within 3 weeks of use."
-              },
-              {
-                name: "Rajesh M.",
-                rating: 5,
-                review: "Love the natural fragrance and how soft my hair feels after each use."
-              },
-              {
-                name: "Meera S.",
-                rating: 5,
-                review: "Finally found a product that works! My hair is thicker and healthier now."
-              }
-            ].map((testimonial, index) => (
-              <Card key={index} className="shadow-md">
-                <CardContent className="p-6">
-                  <div className="flex text-yellow-400 mb-3">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <Star className="w-6 h-6 text-green-600" />
                   </div>
-                  <p className="text-gray-600 italic mb-4">"{testimonial.review}"</p>
-                  <p className="font-semibold text-gray-900">- {testimonial.name}</p>
-                </CardContent>
-              </Card>
-            ))}
+                  <p className="text-sm font-medium text-gray-900">
+                    Clinically Tested
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Content - Product Image */}
+            <div className="flex justify-center relative">
+              <img
+                src="/images/herbal-oil.png"
+                alt="Sasya Mantra Herbal Hair Growth Oil"
+                className="rounded-3xl shadow-2xl w-80 h-auto object-cover"
+              />
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-200 rounded-full opacity-60" />
+              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-orange-200 rounded-full opacity-60" />
+            </div>
           </div>
         </div>
       </section>

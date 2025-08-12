@@ -1,7 +1,13 @@
+// app/page.tsx
+"use client";
+
 import { Button } from '@/components/ui/button';
 import { Leaf, Star, Users } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <div className="min-h-screen relative">
       {/* Hero Section */}
@@ -19,19 +25,21 @@ export default function Home() {
                   Growth Oil
                 </h1>
                 <p className="text-lg text-gray-600 max-w-md">
-                  Nourish your hair naturally with our premium herbal formula. Experience the power of nature for healthier, stronger hair.
+                  Nourish your hair naturally with our premium herbal formula.
+                  Experience the power of nature for healthier, stronger hair.
                 </p>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg font-semibold rounded-md transition-colors duration-200"
+                  onClick={() => router.push("/products")}
                 >
                   Order Now
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="lg"
                   className="border-green-600 text-green-600 hover:bg-green-50 px-8 py-3 text-lg font-semibold rounded-md transition-colors duration-200"
                 >
@@ -45,13 +53,17 @@ export default function Home() {
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Leaf className="w-6 h-6 text-green-600" />
                   </div>
-                  <p className="text-sm font-medium text-gray-900">100% Natural</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    100% Natural
+                  </p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Star className="w-6 h-6 text-green-600" />
                   </div>
-                  <p className="text-sm font-medium text-gray-900">Clinically Tested</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    Clinically Tested
+                  </p>
                 </div>
               </div>
             </div>
@@ -60,7 +72,7 @@ export default function Home() {
             <div className="flex justify-center relative">
               <div className="w-80 h-96 bg-gradient-to-b from-amber-100 to-amber-50 rounded-3xl shadow-2xl flex items-center justify-center">
                 <div className="w-48 h-72 bg-amber-800 rounded-2xl relative overflow-hidden">
-                  <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-black rounded-full"></div>
+                  <div className="absolute top-6 left-1/2 -translate-x-1/2 w-8 h-8 bg-black rounded-full" />
                   <div className="absolute top-16 left-4 right-4 bg-amber-100 rounded-lg p-4">
                     <div className="flex items-center justify-center mb-2">
                       <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
@@ -68,7 +80,9 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="text-center">
-                      <h3 className="font-bold text-gray-900 text-sm">Sasya Mantra</h3>
+                      <h3 className="font-bold text-gray-900 text-sm">
+                        Sasya Mantra
+                      </h3>
                       <p className="text-xs text-gray-700 mt-1">Herbal Hair</p>
                       <p className="text-xs text-gray-700">Growth Oil</p>
                       <div className="mt-3 flex items-center justify-center">
@@ -80,8 +94,8 @@ export default function Home() {
                 </div>
               </div>
               {/* Decorative elements */}
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-200 rounded-full opacity-60"></div>
-              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-orange-200 rounded-full opacity-60"></div>
+              <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-200 rounded-full opacity-60" />
+              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-orange-200 rounded-full opacity-60" />
             </div>
           </div>
         </div>
@@ -94,22 +108,30 @@ export default function Home() {
             About Sasya Mantra
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
-            At Sasya Mantra, we believe in the power of nature to nurture and heal. Our herbal hair growth oil is crafted using traditional recipes passed down through generations, combined with modern scientific research to deliver exceptional results for your hair care needs.
+            At Sasya Mantra, we believe in the power of nature to nurture and
+            heal. Our herbal hair growth oil is crafted using traditional
+            recipes passed down through generations, combined with modern
+            scientific research to deliver exceptional results for your hair
+            care needs.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16 max-w-2xl mx-auto">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">10,000+</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                10,000+
+              </h3>
               <p className="text-gray-600">Happy Customers</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Leaf className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">15+</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                15+
+              </h3>
               <p className="text-gray-600">Natural Ingredients</p>
             </div>
           </div>
@@ -123,7 +145,8 @@ export default function Home() {
             Follow Us
           </h2>
           <p className="text-lg text-gray-600 mb-8">
-            Stay connected with us on social media for the latest updates, tips, and exclusive offers.
+            Stay connected with us on social media for the latest updates, tips,
+            and exclusive offers.
           </p>
           <div className="flex justify-center space-x-6">
             <Button variant="outline" size="lg" className="rounded-full">
@@ -169,4 +192,4 @@ export default function Home() {
       </a>
     </div>
   );
-}             
+}

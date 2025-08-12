@@ -12,13 +12,39 @@ export default function LoginForm() {
     e.preventDefault();
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    // Step 1: Login with Supabase
+    const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) {
-      setError(error.message);
+    if (signInError) {
+      setError(signInError.message);
+      return;
+    }
+
+    // Step 2: Get the logged-in user's ID
+    const userId = authData.user?.id;
+    if (!userId) {
+      setError("Unable to get user ID after login.");
+      return;
+    }
+
+    // Step 3: Fetch user profile from Supabase
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", userId)
+      .single();
+
+    if (profileError) {
+      setError("Unable to fetch user role.");
+      return;
+    }
+
+    // Step 4: Redirect based on role
+    if (profile?.role === "admin") {
+      window.location.href = "/admin/dashboard";
     } else {
       window.location.href = "/";
     }
