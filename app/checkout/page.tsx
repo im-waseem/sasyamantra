@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type OrderForm = {
   id?: string;
@@ -16,6 +17,7 @@ type OrderForm = {
   zip?: string;
   payment_method?: string;
   status?: string;
+  total?: number;
 };
 
 const initialProduct = {
@@ -24,7 +26,48 @@ const initialProduct = {
   price: 100,
 };
 
-export default function Checkout() {
+// Step Progress UI
+function OrderTracker({ status }: { status: string }) {
+  const steps = ["pending", "processing", "shipped", "completed"];
+  return (
+    <div className="mt-6 p-6 rounded-lg shadow-lg bg-white">
+      <h3 className="text-xl font-semibold mb-4">Order Status</h3>
+      <div className="flex items-center gap-4">
+        {steps.map((step, idx) => {
+          const completed = steps.indexOf(status) >= idx;
+          return (
+            <div key={step} className="flex-1 flex flex-col items-center relative">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white ${
+                  completed ? "bg-green-500" : "bg-gray-300"
+                }`}
+              >
+                {idx + 1}
+              </div>
+              {idx < steps.length - 1 && (
+                <div
+                  className={`absolute top-5 left-10 w-full h-1 ${
+                    completed ? "bg-green-500" : "bg-gray-300"
+                  }`}
+                />
+              )}
+              <span className="mt-2 text-sm capitalize">{step}</span>
+            </div>
+          );
+        })}
+      </div>
+      {status === "completed" && (
+        <p className="mt-4 text-center text-green-700 font-semibold">
+          🎉 Your order has been completed!
+        </p>
+      )}
+    </div>
+  );
+}
+
+export default function CheckoutDashboard() {
+  const router = useRouter();
+
   const [form, setForm] = useState<OrderForm>({
     ...initialProduct,
     fullname: "",
@@ -36,211 +79,226 @@ export default function Checkout() {
     zip: "",
     payment_method: "cod",
     status: "pending",
+    total: initialProduct.price,
   });
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [orderStatus, setOrderStatus] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<string | null>(null);
 
-  // Optionally, fetch existing order to edit (if you want)
-  // For now, assuming no fetch — add if needed
+  // Auto-calc total
+  useEffect(() => {
+    setForm((prev) => ({ ...prev, total: prev.quantity * prev.price }));
+  }, [form.quantity, form.price]);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
+  // Handle form change
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "quantity" || name === "price" ? Number(value) : value,
     }));
   }
 
+  // Place order
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     setLoading(true);
     setMessage(null);
 
-    // Basic validation (you can add more)
     const requiredFields = ["fullname", "phone", "address"];
     for (const field of requiredFields) {
-      if (!form[field as keyof OrderForm] || form[field as keyof OrderForm] === "") {
+      if (!form[field as keyof OrderForm]) {
         setMessage(`Field ${field} is required.`);
         setLoading(false);
         return;
       }
     }
 
-    try {
-      // If editing existing order (has id), PATCH else POST
-      const method = form.id ? "PATCH" : "POST";
-      const url = "/api/orders";
+    if (!/^\+?\d{7,15}$/.test(form.phone)) {
+      setMessage("Invalid phone number.");
+      setLoading(false);
+      return;
+    }
 
-      const response = await fetch(url, {
-        method,
+    if (form.zip && !/^\d{4,10}$/.test(form.zip)) {
+      setMessage("Invalid ZIP code.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
 
       const data = await response.json();
-
       if (!response.ok) {
         setMessage(data.error || "Something went wrong");
       } else {
-        setMessage(form.id ? "Order updated successfully!" : "Order placed successfully!");
-        if (!form.id) {
-          // Reset form after new order placed
-          setForm({
-            ...initialProduct,
-            fullname: "",
-            phone: "",
-            address: "",
-            alternate_address: "",
-            city: "",
-            state: "",
-            zip: "",
-            payment_method: "cod",
-            status: "pending",
-          });
-        }
+        setOrderStatus(data.status || "pending");
+        setOrderId(data.id);
+        setMessage("Order placed successfully!");
       }
-    } catch (error) {
-      setMessage("Network error: " + (error as Error).message);
+    } catch (err) {
+      setMessage("Network error");
     }
-
     setLoading(false);
   }
 
-  return (
-    <main style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
-      <h1>Checkout</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            Product Name
-            <input
-              type="text"
-              name="product_name"
-              value={form.product_name}
-              readOnly
-              style={{ backgroundColor: "#eee" }}
-            />
-          </label>
-        </div>
+  // Poll order status
+  useEffect(() => {
+    if (!orderId) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/orders/${orderId}`);
+        const data = await res.json();
+        if (res.ok && data.status) {
+          setOrderStatus(data.status);
+          if (data.status === "completed") clearInterval(interval);
+        }
+      } catch (err) {
+        console.error("Error fetching order status", err);
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [orderId]);
 
-        <div>
-          <label>
-            Quantity
+  return (
+    <main className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">Checkout Dashboard</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Checkout Form */}
+        <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col gap-4">
+          <h2 className="text-xl font-semibold mb-2">Your Order</h2>
+
+          <div className="flex justify-between">
+            <span>Product:</span>
+            <span className="font-semibold">{form.product_name}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Quantity:</span>
             <input
               type="number"
               name="quantity"
-              value={form.quantity}
               min={1}
+              value={form.quantity}
               onChange={handleChange}
-              required
+              className="w-20 px-2 py-1 border rounded"
             />
-          </label>
-        </div>
+          </div>
+          <div className="flex justify-between">
+            <span>Price:</span>
+            <span>${form.price}</span>
+          </div>
+          <div className="flex justify-between font-bold text-lg">
+            <span>Total:</span>
+            <span>${form.total}</span>
+          </div>
 
-        <div>
-          <label>
-            Price
-            <input
-              type="number"
-              name="price"
-              value={form.price}
-              readOnly
-              style={{ backgroundColor: "#eee" }}
-            />
-          </label>
-        </div>
+          <hr className="my-3" />
 
-        <div>
-          <label>
-            Full Name*
+          <h2 className="text-xl font-semibold mb-2">Billing Details</h2>
+
+          <input
+            type="text"
+            name="fullname"
+            placeholder="Full Name*"
+            value={form.fullname}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded"
+          />
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Phone*"
+            value={form.phone}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded"
+          />
+          <textarea
+            name="address"
+            placeholder="Current Address*"
+            value={form.address}
+            onChange={handleChange}
+            rows={3}
+            className="w-full px-3 py-2 border rounded"
+          />
+          <textarea
+            name="alternate_address"
+            placeholder="Alternate Address"
+            value={form.alternate_address}
+            onChange={handleChange}
+            rows={2}
+            className="w-full px-3 py-2 border rounded"
+          />
+          <div className="grid grid-cols-2 gap-3">
             <input
               type="text"
-              name="fullname"
-              value={form.fullname}
+              name="city"
+              placeholder="City"
+              value={form.city}
               onChange={handleChange}
-              required
+              className="w-full px-3 py-2 border rounded"
             />
-          </label>
-        </div>
-
-        <div>
-          <label>
-            Phone*
             <input
-              type="tel"
-              name="phone"
-              value={form.phone}
+              type="text"
+              name="state"
+              placeholder="State"
+              value={form.state}
               onChange={handleChange}
-              required
+              className="w-full px-3 py-2 border rounded"
             />
-          </label>
-        </div>
-
-        <div>
-          <label>
-            Current Address*
-            <textarea
-              name="address"
-              value={form.address}
+            <input
+              type="text"
+              name="zip"
+              placeholder="ZIP Code"
+              value={form.zip}
               onChange={handleChange}
-              required
-              rows={3}
+              className="w-full px-3 py-2 border rounded"
             />
-          </label>
+          </div>
+          <select
+            name="payment_method"
+            value={form.payment_method}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded"
+          >
+            <option value="cod">Cash on Delivery</option>
+            <option value="card">Credit/Debit Card</option>
+            <option value="paypal">Paypal</option>
+          </select>
+
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={loading}
+            className={`mt-4 py-3 rounded font-semibold text-white ${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+            }`}
+          >
+            {loading ? "Processing..." : "Place Order"}
+          </button>
+
+          {message && <p className="mt-3 text-center font-semibold text-gray-700">{message}</p>}
         </div>
 
-        <div>
-          <label>
-            Alternate Address
-            <textarea
-              name="alternate_address"
-              value={form.alternate_address}
-              onChange={handleChange}
-              rows={3}
-            />
-          </label>
+        {/* Tracker */}
+        <div className="flex flex-col gap-6">
+          {orderStatus ? <OrderTracker status={orderStatus} /> : (
+            <div className="bg-white rounded-lg shadow-lg p-6 flex items-center justify-center h-full">
+              <p className="text-gray-500">No active orders yet</p>
+            </div>
+          )}
         </div>
-
-        <div>
-          <label>
-            City
-            <input type="text" name="city" value={form.city} onChange={handleChange} />
-          </label>
-        </div>
-
-        <div>
-          <label>
-            State
-            <input type="text" name="state" value={form.state} onChange={handleChange} />
-          </label>
-        </div>
-
-        <div>
-          <label>
-            ZIP Code
-            <input type="text" name="zip" value={form.zip} onChange={handleChange} />
-          </label>
-        </div>
-
-        <div>
-          <label>
-            Payment Method
-            <select name="payment_method" value={form.payment_method} onChange={handleChange}>
-              <option value="cod">Cash on Delivery</option>
-              <option value="card">Credit/Debit Card</option>
-              <option value="paypal">Paypal</option>
-            </select>
-          </label>
-        </div>
-
-        <button type="submit" disabled={loading} style={{ marginTop: 15 }}>
-          {loading ? "Processing..." : form.id ? "Update Order" : "Place Order"}
-        </button>
-      </form>
-
-      {message && <p style={{ marginTop: 15 }}>{message}</p>}
+      </div>
     </main>
   );
 }
+  

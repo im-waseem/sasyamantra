@@ -1,16 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Leaf, Star } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient"; // ✅ Using your custom Supabase client
+import { supabase } from "@/lib/supabaseClient";
+import { useCart } from "@/app/admin/context/CartContext"; // make sure your context provides items & addItem
 
 export default function ProductPage() {
   const router = useRouter();
-  const [cart, setCart] = useState<{ name: string; qty: number }[]>([]);
+  const { items, addItem } = useCart(); // get cart items and addItem function
 
-  // ✅ Check authentication and navigate
+  const [product] = useState({
+    name: "Sasya Mantra Herbal Hair Growth Oil",
+    price: 499,
+    image: "/images/herbal-oil.png",
+  });
+
+  // Check authentication and navigate to checkout
   const handleOrderNow = async () => {
     const {
       data: { session },
@@ -19,50 +26,36 @@ export default function ProductPage() {
     if (!session) {
       router.push("/login"); // redirect to login if not authenticated
     } else {
-      router.push("/checkout"); // go to checkout if authenticated
+      addItem(product, 1); // add one to cart
+      router.push("/checkout"); // go to checkout
     }
   };
 
-  // ✅ Add to cart (multiple quantities allowed)
+  // Add product to cart
   const handleAddToCart = () => {
-    const productName = "Sasya Mantra Herbal Hair Growth Oil";
-
-    setCart((prev) => {
-      const existing = prev.find((item) => item.name === productName);
-      if (existing) {
-        return prev.map((item) =>
-          item.name === productName
-            ? { ...item, qty: item.qty + 1 }
-            : item
-        );
-      }
-      return [...prev, { name: productName, qty: 1 }];
-    });
-
-    alert("Product added to cart!");
+    addItem(product, 1); // use context method
+    alert(`${product.name} added to cart!`);
   };
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gray-50 to-gray-100 py-20 lg:py-32">
+      <section className="py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-8">
-              <div className="space-y-4">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                  Sasya Mantra
-                  <br />
-                  <span className="text-green-600">Herbal Hair</span>
-                  <br />
-                  Growth Oil
-                </h1>
-                <p className="text-lg text-gray-600 max-w-md">
-                  Nourish your hair naturally with our premium herbal formula.
-                  Experience the power of nature for healthier, stronger hair.
-                </p>
-              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                Sasya Mantra
+                <br />
+                <span className="text-green-600">Herbal Hair</span>
+                <br />
+                Growth Oil
+              </h1>
+              <p className="text-lg text-gray-600 max-w-md">
+                Nourish your hair naturally with our premium herbal formula.
+                Experience the power of nature for healthier, stronger hair.
+              </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
@@ -88,29 +81,51 @@ export default function ProductPage() {
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Leaf className="w-6 h-6 text-green-600" />
                   </div>
-                  <p className="text-sm font-medium text-gray-900">
-                    100% Natural
-                  </p>
+                  <p className="text-sm font-medium text-gray-900">100% Natural</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Star className="w-6 h-6 text-green-600" />
                   </div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Clinically Tested
-                  </p>
+                  <p className="text-sm font-medium text-gray-900">Clinically Tested</p>
                 </div>
               </div>
+
+              {/* Cart Details Preview */}
+              {items && items.length > 0 && (
+                <div className="mt-6 border rounded p-4 bg-white shadow-md max-w-md">
+                  <h2 className="text-lg font-medium text-gray-900 mb-2">
+                    Cart Details
+                  </h2>
+                  {items.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between py-1 border-b last:border-b-0"
+                    >
+                      <span>{item.name}</span>
+                      <span>
+                        {item.quantity} x ${item.price}
+                      </span>
+                    </div>
+                  ))}
+                  <Button
+                    variant="secondary"
+                    className="mt-3 w-full bg-green-600 text-white hover:bg-green-700"
+                    onClick={() => router.push("/cart")}
+                  >
+                    View Full Cart
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Right Content - Product Image */}
             <div className="flex justify-center relative">
               <img
-                src="/images/herbal-oil.png"
-                alt="Sasya Mantra Herbal Hair Growth Oil"
+                src={product.image}
+                alt={product.name}
                 className="rounded-3xl shadow-2xl w-80 h-auto object-cover"
               />
-              {/* Decorative elements */}
               <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-200 rounded-full opacity-60" />
               <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-orange-200 rounded-full opacity-60" />
             </div>

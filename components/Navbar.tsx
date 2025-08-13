@@ -1,13 +1,23 @@
+// components/Navbar.tsx
 "use client";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, Leaf } from "lucide-react";
+import { Menu, X, Leaf, ShoppingCart, User } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import { usePathname, useRouter } from "next/navigation";
+import { useCart } from "@/app/admin/context/CartContext";
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { items } = useCart();
+
   const [isOpen, setIsOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [role, setRole] = useState<string | null>(null);
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -17,13 +27,32 @@ export default function Navbar() {
     { name: "Feedback", href: "/feedback" },
   ];
 
+  // Load user session from Supabase
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        setUser(data.user);
+        setRole(data.user.user_metadata?.role || "user");
+      } else {
+        setUser(null);
+        setRole(null);
+      }
+    };
+    fetchUser();
+
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_, session) => {
-        setUser(session?.user || null);
+        if (session?.user) {
+          setUser(session.user);
+          setRole(session.user.user_metadata?.role || "user");
+        } else {
+          setUser(null);
+          setRole(null);
+        }
       }
     );
+
     return () => {
       authListener.subscription.unsubscribe();
     };
@@ -31,10 +60,16 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    router.push("/login");
   };
 
+  // Completely hide navbar for admin dashboard
+  if (role === "admin" && pathname?.startsWith("/admin")) {
+    return null;
+  }
+
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className="bg-white shadow-sm border-b relative z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -45,8 +80,8 @@ export default function Navbar() {
             <span className="text-xl font-bold text-gray-900">Sasya Mantra</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-6 relative">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -57,31 +92,101 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {user ? (
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-800">
-                  Welcome, {user.email}
-                </span>
+            {user && role !== "admin" && (
+              <Link
+                href="/order-history"
+                className="text-gray-700 hover:text-green-600 px-3 py-2 text-sm font-medium"
+              >
+                Track Orders
+              </Link>
+            )}
+
+            {user && role !== "admin" && (
+              <div className="relative">
                 <button
-                  onClick={handleLogout}
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                  onClick={() => setCartOpen(!cartOpen)}
+                  className="flex items-center text-sm text-gray-800 hover:text-green-600"
                 >
-                  Logout
+                  <ShoppingCart className="w-5 h-5 mr-1" />
+                  {items?.length ?? 0}
                 </button>
+
+                {cartOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white border rounded shadow-lg z-50 p-3">
+                    {items.length > 0 ? (
+                      items.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex justify-between py-1 border-b last:border-b-0"
+                        >
+                          <span>{item.name}</span>
+                          <span>
+                            {item.quantity} × ₹{item.price}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-500">Your cart is empty.</p>
+                    )}
+                    <Link
+                      href="/cart"
+                      className="block mt-2 text-center bg-green-600 text-white py-1 rounded hover:bg-green-700"
+                    >
+                      View Cart
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center space-x-2 text-gray-800 hover:text-green-600"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="text-sm">{user.email}</span>
+                </button>
+
+                {userMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50">
+                    {role !== "admin" && (
+                      <Link
+                        href="/order-history"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Track Orders
+                      </Link>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <>
-                <Link href="/login" className="text-green-600 font-medium">
+                <Link
+                  href="/login"
+                  className="text-green-600 font-medium hover:underline"
+                >
                   Login
                 </Link>
-                <Link href="/register" className="text-green-600 font-medium">
+                <Link
+                  href="/register"
+                  className="text-green-600 font-medium hover:underline"
+                >
                   Register
                 </Link>
               </>
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -92,7 +197,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden bg-white border-t px-2 pb-3">
             {navItems.map((item) => (
@@ -105,22 +210,42 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {user ? (
+            {user && role !== "admin" && (
               <>
-                <p className="px-3 py-2">Welcome, {user.email}</p>
-                <button
-                  onClick={handleLogout}
-                  className="w-full bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded"
+                <Link
+                  href="/order-history"
+                  className="block px-3 py-2 text-gray-700 hover:text-green-600"
                 >
-                  Logout
-                </button>
+                  Track Orders
+                </Link>
+                <Link
+                  href="/cart"
+                  className="block px-3 py-2 text-gray-700 hover:text-green-600"
+                >
+                  Cart ({items?.length ?? 0})
+                </Link>
               </>
+            )}
+
+            {user ? (
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100"
+              >
+                Logout
+              </button>
             ) : (
               <>
-                <Link href="/login" className="block px-3 py-2 text-green-600">
+                <Link
+                  href="/login"
+                  className="block px-3 py-2 text-green-600 hover:underline"
+                >
                   Login
                 </Link>
-                <Link href="/register" className="block px-3 py-2 text-green-600">
+                <Link
+                  href="/register"
+                  className="block px-3 py-2 text-green-600 hover:underline"
+                >
                   Register
                 </Link>
               </>
@@ -131,3 +256,6 @@ export default function Navbar() {
     </nav>
   );
 }
+
+  // Optionally, you can export types or helper functions here if needed in the future.
+  // Currently, all logic is encapsulated in the Navbar component above.
