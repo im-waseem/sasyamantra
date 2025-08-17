@@ -1,103 +1,50 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
-
-interface User {
-  id: string;
-  email: string | null;
-  created_at: string | null;
-}
-
+// app/admin/page.tsx
 export default function AdminDashboard() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
-
-  // Fetch users from Supabase
-  const fetchUsers = async () => {
-    setLoading(true);
-    setError(null);
-
-    const { data, error } = await supabase
-      .from<User>("profiles")
-      .select("id, email, created_at")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      setError(error.message);
-      setUsers([]);
-    } else {
-      setUsers(data || []);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  // Filter users by email
-  const filteredUsers = users.filter((user) =>
-    user.email?.toLowerCase().includes(search.toLowerCase())
-  );
-
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
-        <p className="mb-6 text-gray-700">Total users: {users.length}</p>
+    <div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+        <p className="mt-2 text-gray-600">Welcome to the Sasya Mantra admin panel</p>
+      </div>
 
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="Search by email..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="mb-4 p-2 border rounded w-full md:w-1/3"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Total Users</h3>
+          <p className="text-3xl font-bold text-green-600">1,234</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Products</h3>
+          <p className="text-3xl font-bold text-blue-600">89</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Orders</h3>
+          <p className="text-3xl font-bold text-orange-600">456</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Revenue</h3>
+          <p className="text-3xl font-bold text-purple-600">₹78,900</p>
+        </div>
+      </div>
 
-        {loading ? (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Orders</h3>
+          <p className="text-gray-600">Recent orders will be displayed here...</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
           <div className="space-y-2">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-10 bg-gray-200 animate-pulse rounded"
-              />
-            ))}
+            <button className="w-full text-left px-4 py-2 bg-green-50 text-green-700 rounded-md hover:bg-green-100 transition-colors">
+              Add New Product
+            </button>
+            <button className="w-full text-left px-4 py-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">
+              View All Orders
+            </button>
+            <button className="w-full text-left px-4 py-2 bg-purple-50 text-purple-700 rounded-md hover:bg-purple-100 transition-colors">
+              Generate Reports
+            </button>
           </div>
-        ) : error ? (
-          <p className="text-red-600 font-semibold">{error}</p>
-        ) : filteredUsers.length === 0 ? (
-          <p className="text-gray-500">No users found.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-300 rounded-md overflow-hidden">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border border-gray-300 p-3 text-left">Email</th>
-                  <th className="border border-gray-300 p-3 text-left">Joined</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredUsers.map(({ id, email, created_at }) => (
-                  <tr
-                    key={id}
-                    className="even:bg-gray-50 hover:bg-blue-50 transition-colors"
-                  >
-                    <td className="border border-gray-300 p-3">{email || "N/A"}</td>
-                    <td className="border border-gray-300 p-3">
-                      {created_at
-                        ? new Date(created_at).toLocaleDateString()
-                        : "N/A"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -1,26 +1,48 @@
-"use client";
-import { createContext, useContext, useState, ReactNode } from "react";
+// Example component using the cart
+'use client';
 
-interface CartItem { id: number; name: string; quantity: number; }
-interface CartContextType {
-  items: CartItem[];
-  addToCart: (item: CartItem) => void;
-  removeFromCart: (id: number) => void;
+import { useCart,useCartItem } from '../hooks/useCart';
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  stock: number;
+};
+
+export default function ProductCard({ product }: { product: Product }) {
+  const { addItem } = useCart();
+  const cartItem = useCartItem(product.id);
+
+  const handleAddToCart = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      maxQuantity: product.stock,
+    });
+  };
+
+  return (
+    <div>
+      <h3>{product.name}</h3>
+      <p>₹{product.price}</p>
+      {cartItem.isInCart ? (
+        <div>
+          <button onClick={() => cartItem.updateQuantity(cartItem.quantity - 1)}>
+            -
+          </button>
+          <span>{cartItem.quantity}</span>
+          <button onClick={() => cartItem.updateQuantity(cartItem.quantity + 1)}>
+            +
+          </button>
+        </div>
+      ) : (
+        <button onClick={handleAddToCart}>
+          Add to Cart
+        </button>
+      )}
+    </div>
+  );
 }
-
-const CartContext = createContext<CartContextType | undefined>(undefined);
-
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
-
-  const addToCart = (item: CartItem) => setItems(prev => [...prev, item]);
-  const removeFromCart = (id: number) => setItems(prev => prev.filter(i => i.id !== id));
-
-  return <CartContext.Provider value={{ items, addToCart, removeFromCart }}>{children}</CartContext.Provider>;
-};
-
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) throw new Error("useCart must be used within CartProvider");
-  return context;
-};

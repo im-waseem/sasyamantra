@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Leaf, Star, Shield, Heart } from "lucide-react";
-import Cart from "@/components/Cart";
+import Cart from "../admin/components/Cart";
 
 export default function ProductsPage() {
   const router = useRouter();

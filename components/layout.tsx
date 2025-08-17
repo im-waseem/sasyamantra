@@ -1,18 +1,17 @@
 import './globals.css';
-import AuthGuard from '@/components/AuthGuard';
-import UserMenu from '@/components/UserMenu';
+import { ReactNode } from "react";
+import LayoutWrapper from '@/components/LayoutWrapper';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+interface RootLayoutProps {
+  children: ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
+  // We will pass children to LayoutWrapper
   return (
     <html lang="en">
-      <body>
-        <AuthGuard>
-          <header className="flex justify-between items-center p-4 bg-white shadow">
-            <h1 className="text-xl font-bold">Sasya Mantra</h1>
-            <UserMenu />
-          </header>
-          <main>{children}</main>
-        </AuthGuard>
+      <body className="bg-gray-50 min-h-screen">
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );
